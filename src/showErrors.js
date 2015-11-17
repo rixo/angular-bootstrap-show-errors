@@ -28,6 +28,7 @@
         options = scope.$eval(attrs.showErrors);
         showSuccess = getShowSuccess(options);
         trigger = getTrigger(options);
+        var successTrigger = angular.isString(showSuccess) ? showSuccess : trigger;
         inputEl = el[0].querySelector('.form-control[name]');
         inputNgEl = angular.element(inputEl);
         inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
@@ -35,12 +36,29 @@
           throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class";
         }
         inputNgEl.bind(trigger, function() {
+          if (formCtrl.$pristine) {
+            return;
+          }
           blurred = true;
           return toggleClasses(formCtrl[inputName].$invalid);
+        });
+        if (showSuccess && successTrigger !== trigger) {
+          inputNgEl.bind(successTrigger, function() {
+            return toggleSuccess(formCtrl[inputName].$invalid);
+          });
+        }
+        inputNgEl.bind('focus', function() {
+          $timeout(function() {
+            el.removeClass('has-error');
+            blurred = false;
+          }, 0, false);
         });
         scope.$watch(function() {
           return formCtrl[inputName] && formCtrl[inputName].$invalid;
         }, function(invalid) {
+          if (showSuccess) {
+            el.toggleClass('has-success', !invalid);
+          }
           if (!blurred) {
             return;
           }
@@ -62,6 +80,9 @@
             return el.toggleClass('has-success', !invalid);
           }
         };
+        function toggleSuccess(invalid) {
+          el.toggleClass('has-success', !invalid);
+        }
       };
       return {
         restrict: 'A',
