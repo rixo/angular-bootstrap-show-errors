@@ -36,7 +36,13 @@
           throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class";
         }
         inputNgEl.bind(trigger, function() {
-          if (formCtrl.$pristine) {
+          if (
+            // field has not been touched
+            !formCtrl[inputName].$touched
+            // or field has autofocus and has not been modified
+            || inputNgEl.prop('autofocus') && !formCtrl[inputName].$dirty
+          ) {
+            // skip
             return;
           }
           blurred = true;
