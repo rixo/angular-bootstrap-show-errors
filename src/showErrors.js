@@ -26,6 +26,7 @@
         var blurred, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
         blurred = false;
         options = scope.$eval(attrs.showErrors);
+        var onlyUpdate = options && options.onlyUpdate;
         showSuccess = getShowSuccess(options);
         trigger = getTrigger(options);
         var successTrigger = angular.isString(showSuccess) ? showSuccess : trigger;
@@ -83,7 +84,7 @@
           }, 0, false);
         });
         return toggleClasses = function(invalid) {
-          if (options.onlyUpdate && formCtrl[inputName].$pristine) {
+          if (onlyUpdate && formCtrl[inputName].$pristine) {
             return;
           }
           el.toggleClass('has-error', invalid);
@@ -92,7 +93,7 @@
           }
         };
         function toggleSuccess(invalid) {
-          if (options.onlyUpdate && formCtrl[inputName].$pristine) {
+          if (onlyUpdate && formCtrl[inputName].$pristine) {
             return;
           }
           el.toggleClass('has-success', !invalid);
