@@ -65,7 +65,7 @@
         }, function(invalid) {
           var input = formCtrl[inputName];
           if (input && input.$touched && showSuccess) {
-            el.toggleClass('has-success', !invalid);
+            toggleSuccess(invalid);
           }
           if (!blurred) {
             return;
@@ -83,12 +83,18 @@
           }, 0, false);
         });
         return toggleClasses = function(invalid) {
+          if (options.onlyUpdate && formCtrl[inputName].$pristine) {
+            return;
+          }
           el.toggleClass('has-error', invalid);
           if (showSuccess) {
             return el.toggleClass('has-success', !invalid);
           }
         };
         function toggleSuccess(invalid) {
+          if (options.onlyUpdate && formCtrl[inputName].$pristine) {
+            return;
+          }
           el.toggleClass('has-success', !invalid);
         }
       };
