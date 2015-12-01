@@ -60,9 +60,11 @@
           }, 0, false);
         });
         scope.$watch(function() {
-          return formCtrl[inputName] && formCtrl[inputName].$invalid;
+          var input = formCtrl[inputName];
+          return input && input.$touched && input.$invalid;
         }, function(invalid) {
-          if (showSuccess) {
+          var input = formCtrl[inputName];
+          if (input && input.$touched && showSuccess) {
             el.toggleClass('has-success', !invalid);
           }
           if (!blurred) {
